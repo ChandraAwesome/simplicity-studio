@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep the image-to-sketch UI in focused workspace components, separate from the home route; this keeps presentation independent of a future conversion service.
+- Use browser-local state for this UI-only prototype, without claiming a live CAD connection or production conversion; service integration is outside the requested scope.
