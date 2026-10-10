@@ -67,3 +67,12 @@
 @media (max-width: 1050px) { .workspace-shell { padding: 24px; } .workspace-grid { grid-template-columns: 240px minmax(0,1fr); gap: 20px; } .preview-canvas { height: 330px; } .header-steps { display: none; } }
 @media (max-width: 760px) { .app-header { height: 64px; } .workspace-shell { padding: 22px 16px; } .workspace-grid { grid-template-columns: minmax(0,1fr); gap: 20px; } .settings-panel { order: 2; } .comparison-workspace { order: 1; } .preview-grid { gap: 8px; } .preview-canvas { height: 250px; } .preview-canvas img { width: 93%; height: 87%; } .preview-grid.expanded .preview-canvas { height: 350px; } .preview-label { font-size: 11px; } .app-footer { padding: 16px; } .desktop-only { display: none; } .geometry-table th,.geometry-table td { padding: 11px 12px; } }
 @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation: none !important; transition: none !important; } }
+.studio-design { --background: oklch(0.985 0.002 230); --foreground: oklch(0.28 0.012 230); --primary: oklch(0.46 0.082 210); --accent: oklch(0.946 0.02 210); --secondary: oklch(0.954 0.004 230); --border: oklch(0.9 0.009 230); --muted-foreground: oklch(0.52 0.013 230); --canvas: oklch(0.988 0.003 230); --dot: oklch(0.87 0.008 230); background: var(--background); color: var(--foreground); }
+.studio-shell { max-width: 1500px; margin: auto; padding: 28px 32px; }
+.studio-target { grid-template-columns: 185px minmax(0,1fr) auto; }
+.studio-main { display: grid; grid-template-columns: 248px minmax(0,1fr); gap: 28px; }
+.studio-controls { padding-right: 24px; border-right: 1px solid var(--border); }
+.studio-design .preview-canvas { height: 285px; }
+.studio-outline img { filter: url(#studio-outline); }
+@media (max-width: 1050px) { .header-steps { display: none; } .studio-main { grid-template-columns: 220px minmax(0,1fr); gap: 22px; } .studio-shell { padding: 24px; } .studio-controls { padding-right: 20px; } .studio-design .preview-canvas { height: 255px; } }
+@media (max-width: 760px) { .studio-shell { padding: 20px 16px; } .studio-target { grid-template-columns: minmax(0,1fr); gap: 10px; } .studio-target > button { justify-self: start; } .studio-main { grid-template-columns: minmax(0,1fr); gap: 26px; } .studio-controls { border-right: 0; padding-right: 0; } .studio-design .preview-canvas { height: 220px; } .studio-import { justify-content: flex-end; } .app-header { padding-left: 12px; padding-right: 12px; gap: 8px; } .app-header > a { gap: 8px; } .app-header > a p { display: none; } .app-header > div { gap: 4px; } }

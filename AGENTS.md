@@ -11,3 +11,4 @@
 
 - Keep the image-to-sketch UI in focused workspace components, separate from the home route; this keeps presentation independent of a future conversion service.
 - Use browser-local state for this UI-only prototype, without claiming a live CAD connection or production conversion; service integration is outside the requested scope.
+- Keep alternate workspace designs in their own content routes with a shared version switcher; this preserves the original workspace independently.
