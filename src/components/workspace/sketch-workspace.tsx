@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import chairImage from '@/assets/chair-reference.jpg';
+import { DesignSwitcher } from './design-switcher';
 
 type Settings = { strength: number; sharpen: number; brightness: number; contrast: number; detail: number };
 const defaults: Settings = { strength: 85, sharpen: 30, brightness: 0, contrast: 20, detail: 60 };
@@ -57,7 +58,7 @@ export function SketchWorkspace() {
       <header className="app-header grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-5 sm:px-10">
         <a href="/" className="flex min-w-0 items-center gap-3"><span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground"><PenTool size={19}/></span><div className="min-w-0"><span className="font-display text-sm font-bold">Image to Sketch<span className="ml-2 text-primary">.</span></span><p className="mt-0.5 text-[10px] text-muted-foreground">A little image. Endless possibilities.</p></div></a>
         <nav aria-label="Workflow" className="header-steps absolute left-1/2 flex -translate-x-1/2 items-center gap-4 text-xs"><span className="flex items-center gap-2 text-primary"><span className="grid h-5 w-5 place-items-center rounded-full bg-accent"><Check size={11}/></span>Upload</span><span className="step-line"/><span className="flex items-center gap-2 font-semibold"><span className="grid h-5 w-5 place-items-center rounded-full bg-primary text-primary-foreground text-[10px]">2</span>Refine</span><span className="step-line"/><span className="flex items-center gap-2 text-muted-foreground"><span className="grid h-5 w-5 place-items-center rounded-full border text-[10px]">3</span>Export</span></nav>
-        <div className="flex shrink-0 items-center gap-3"><span className="desktop-only rounded border px-2 py-1 text-[10px] text-muted-foreground">Demo workspace</span><Button variant="ghost" size="icon" aria-label="Help" title="Help" onClick={() => setModal('help')}><CircleHelp size={18}/></Button></div>
+        <div className="flex shrink-0 items-center gap-3"><DesignSwitcher/><Button variant="ghost" size="icon" aria-label="Help" title="Help" onClick={() => setModal('help')}><CircleHelp size={18}/></Button></div>
       </header>
       <main className="workspace-shell fade-in">
         <div className="mb-7 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
