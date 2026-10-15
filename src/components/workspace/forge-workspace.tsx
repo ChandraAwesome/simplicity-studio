@@ -34,7 +34,7 @@ function Section({ step, title, children, aside }: { step: number; title: string
 function SliderRow({ label, value, unit = '', min, max, step = 1, hint, onChange }: { label: string; value: number; unit?: string; min: number; max: number; step?: number; hint: string; onChange: (v: number) => void }) {
   return <div className="space-y-2">
     <div className="flex justify-between text-xs"><Label className="text-xs">{label}</Label><span className="font-mono font-semibold">{value}{unit}</span></div>
-    <Slider aria-label={label} value={[value]} min={min} max={max} step={step} onValueChange={(v) => onChange(v[0])} />
+    <Slider aria-label={label} value={[value]} min={min} max={max} step={step} onValueChange={(v) => onChange(v[0] ?? value)} />
     <p className="text-[11px] leading-snug text-muted-foreground">{hint}</p>
   </div>;
 }
@@ -289,7 +289,7 @@ export function ForgeWorkspace() {
               {layers.length === 0 && <p className="text-[11px] text-muted-foreground">No layers yet.</p>}
               {layers.map((l) => <button key={l.layer} type="button" onClick={() => toggleLayer(l.layer)} aria-pressed={hiddenLayers.has(l.layer)}
                 className={`flex items-center gap-1.5 rounded-md border px-2 py-1 text-[11px] ${hiddenLayers.has(l.layer) ? 'line-through opacity-50' : ''}`}>
-                <span className="h-3 w-3 rounded-sm border" style={{ background: `rgb(${l.rgb.map(Math.round).join(',')})` }} />{l.count}
+                <span className="h-3 w-3 rounded-sm border" style={{ background: `rgb(${(l.rgb ?? [255, 255, 255]).map(Math.round).join(',')})` }} />{l.count}
               </button>)}
             </div>
             <div className="mt-3 flex gap-2">
