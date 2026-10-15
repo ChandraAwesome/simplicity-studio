@@ -180,7 +180,7 @@ export function ForgeWorkspace() {
           {connected
             ? <Button size="sm" variant="secondary" className="h-8" onClick={() => { setConnected(false); setImportState('idle'); }}>Disconnect</Button>
             : <Button size="sm" className="h-8" onClick={() => setConnected(true)}>Connect to Onshape</Button>}
-          <DesignSwitcher current="forge" />
+          <div className="text-foreground"><DesignSwitcher current="forge" /></div>
         </div>
       </div>
     </header>

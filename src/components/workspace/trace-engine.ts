@@ -157,7 +157,7 @@ export function render(canvas: HTMLCanvasElement, r: TraceResult, mode: TraceMod
     let c: number[];
     const isMarked = marked.has(sid);
     if (mode === 'outline') c = edge ? [30, 34, 48] : [255, 255, 255];
-    else c = edge ? [40, 40, 40] : r.palette[r.labels[p]];
+    else c = edge ? [40, 40, 40] : (r.palette[r.labels[p]] ?? [255, 255, 255]);
     if (isMarked) c = (x + y) % 6 < 2 ? [232, 80, 60] : [255, 225, 218];
     const o = (y * w * scale + x) * 4;
     img.data[o] = c[0]; img.data[o + 1] = c[1]; img.data[o + 2] = c[2]; img.data[o + 3] = 255;
