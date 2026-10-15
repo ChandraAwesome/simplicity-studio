@@ -222,7 +222,6 @@ export function ForgeWorkspace() {
                 ? <p className="text-[11px] text-muted-foreground">Traces entirely in your browser — nothing is uploaded until you convert.</p>
                 : <p className="rounded-md bg-accent p-2 text-[11px]">Free plan includes one AI conversion — you’ve used it. <button className="font-semibold text-primary underline" onClick={() => setUpgradeOpen(true)}>Upgrade – $1/mo</button> for unlimited.</p>}
             </div>
-            <label className="flex items-center justify-between text-xs font-medium">Remove background before tracing<Switch checked={removeBg} onCheckedChange={setRemoveBg} aria-label="Remove background" /></label>
             <div className="space-y-1.5"><Label className="text-xs">Output</Label>
               <Segmented label="Output mode" value={mode} onChange={setMode} options={[{ v: 'outline', l: 'Outline (B/W)' }, { v: 'color', l: 'Full Color' }]} />
             </div>
@@ -282,19 +281,27 @@ export function ForgeWorkspace() {
         </div>
 
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-          <div className="forge-card p-4">
-            <div className="mb-2 flex items-center justify-between"><h3 className="text-xs font-bold">Color layers</h3><span className="text-[11px] text-muted-foreground">{marked.size} of {result?.shapes.length ?? 0} marked</span></div>
-            <p className="mb-3 text-[11px] text-muted-foreground">Hide a layer to mark every shape in it for removal.</p>
-            <div className="flex max-h-32 flex-wrap gap-1.5 overflow-auto">
-              {layers.length === 0 && <p className="text-[11px] text-muted-foreground">No layers yet.</p>}
-              {layers.map((l) => <button key={l.layer} type="button" onClick={() => toggleLayer(l.layer)} aria-pressed={hiddenLayers.has(l.layer)}
-                className={`flex items-center gap-1.5 rounded-md border px-2 py-1 text-[11px] ${hiddenLayers.has(l.layer) ? 'line-through opacity-50' : ''}`}>
-                <span className="h-3 w-3 rounded-sm border" style={{ background: `rgb(${(l.rgb ?? [255, 255, 255]).map(Math.round).join(',')})` }} />{l.count}
-              </button>)}
+          <div className="space-y-4">
+            <div className="forge-card p-4">
+              <h3 className="mb-2 text-xs font-bold">Background removal</h3>
+              <label className="flex items-center justify-between text-xs font-medium">Remove background before tracing<Switch checked={removeBg} onCheckedChange={setRemoveBg} aria-label="Remove background" /></label>
+              <p className="mt-2 text-[11px] text-muted-foreground">Strips the backdrop before the trace runs, so stray background color doesn't become its own layer.</p>
             </div>
-            <div className="mt-3 flex gap-2">
-              <Button size="sm" variant="outline" className="h-8" disabled={!marked.size} onClick={() => { setMarked(new Set()); setHiddenLayers(new Set()); setApplied(false); }}>Clear marks</Button>
-              <Button size="sm" className="h-8" disabled={!result} onClick={() => setApplied(true)}>Apply & Continue</Button>
+            <div className="forge-card p-4">
+              <div className="mb-2 flex items-center justify-between"><h3 className="text-xs font-bold">Color layers</h3><span className="text-[11px] text-muted-foreground">{marked.size} of {result?.shapes.length ?? 0} marked</span></div>
+              <p className="mb-3 text-[11px] text-muted-foreground">Hide a layer to mark every shape in it for removal.</p>
+              <div className="flex max-h-40 flex-wrap gap-2 overflow-auto">
+                {layers.length === 0 && <p className="text-[11px] text-muted-foreground">No layers yet.</p>}
+                {layers.map((l) => <button key={l.layer} type="button" onClick={() => toggleLayer(l.layer)} aria-pressed={hiddenLayers.has(l.layer)} title={`${l.count} shape${l.count === 1 ? '' : 's'}`}
+                  className={`relative h-12 w-12 shrink-0 rounded-md border-2 transition ${hiddenLayers.has(l.layer) ? 'border-border opacity-40' : 'border-transparent hover:border-primary'}`}
+                  style={{ background: `rgb(${(l.rgb ?? [255, 255, 255]).map(Math.round).join(',')})` }}>
+                  <span className="absolute -bottom-1.5 -right-1.5 rounded-full border bg-card px-1 text-[9px] font-semibold leading-tight text-foreground">{l.count}</span>
+                </button>)}
+              </div>
+              <div className="mt-3 flex gap-2">
+                <Button size="sm" variant="outline" className="h-8" disabled={!marked.size} onClick={() => { setMarked(new Set()); setHiddenLayers(new Set()); setApplied(false); }}>Clear marks</Button>
+                <Button size="sm" className="h-8" disabled={!result} onClick={() => setApplied(true)}>Apply & Continue</Button>
+              </div>
             </div>
           </div>
           <details className="forge-card p-4">
