@@ -5,11 +5,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { DesignSwitcher } from './design-switcher';
 import chair from '@/assets/chair-reference.jpg';
-import { ACCURACY_PRESETS, loadImageData, parseStudioUrl, render, trace, type Accuracy, type TraceMode, type TraceResult } from './trace-engine';
+import { loadImageData, parseStudioUrl, render, trace, type Accuracy, type TraceMode, type TraceResult } from './trace-engine';
 
 const DEMO_STUDIOS = [
   { name: 'Chair concept — Part Studio 1', url: 'https://cad.onshape.com/documents/7a1c2e9f4b/w/3d8e0b11aa/e/91fc02d4e7' },
@@ -113,10 +112,6 @@ export function ForgeWorkspace() {
     if (result && canvasRef.current && view === 'traced') render(canvasRef.current, result, mode, marked);
   }, [result, marked, view, mode]);
 
-  const pickAccuracy = (a: Accuracy) => {
-    setAccuracy(a); const p = ACCURACY_PRESETS[a];
-    setColorDetail(p.colorDetail); setNoise(p.noise); setColors(p.colors); setReduce(p.reduce); setFineTune(false);
-  };
   const tune = (set: (v: number) => void) => (v: number) => { set(v); setFineTune(true); };
 
   const handleFile = (f?: File | null) => {
@@ -225,30 +220,7 @@ export function ForgeWorkspace() {
             <div className="space-y-1.5"><Label className="text-xs">Output</Label>
               <Segmented label="Output mode" value={mode} onChange={setMode} options={[{ v: 'outline', l: 'Outline (B/W)' }, { v: 'color', l: 'Full Color' }]} />
             </div>
-            <div className="space-y-1.5"><Label className="text-xs">Accuracy</Label>
-              <Select value={accuracy} onValueChange={(v) => pickAccuracy(v as Accuracy)}>
-                <SelectTrigger className="h-9 text-xs" aria-label="Accuracy"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="low">Low — fewest shapes, cleanest geometry</SelectItem>
-                  <SelectItem value="medium">Medium — balanced (recommended)</SelectItem>
-                  <SelectItem value="high">High — most detail, more shapes</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <details className="rounded-md border p-3" open>
-              <summary className="cursor-pointer text-xs font-semibold">Fine-tune {fineTune && <span className="ml-1 rounded bg-accent px-1.5 py-0.5 text-[10px] text-primary">overrides Accuracy</span>}</summary>
-              <div className="mt-3 space-y-4">
-                {mode === 'outline' ? <>
-                  <SliderRow label="Color detail" value={colorDetail} min={2} max={10} onChange={tune(setColorDetail)} hint="Higher = more distinct color layers, but risk of noisy/split regions" />
-                  <SliderRow label="Noise filter" value={noise} unit="px" min={1} max={20} onChange={tune(setNoise)} hint="Higher = discards smaller regions as noise" />
-                </> : <>
-                  <SliderRow label="Colors" value={colors} min={2} max={32} onChange={tune(setColors)} hint="Max number of distinct color layers in the output" />
-                  <SliderRow label="Detail / auto-reduce" value={reduce} unit="px" min={1} max={20} onChange={tune(setReduce)} hint="Higher = merges away more small regions" />
-                </>}
-                <SliderRow label="Smoothness" value={smoothness} min={0} max={1.5} step={0.05} onChange={setSmoothness} hint="Higher = smoother curves, lower = keeps sharp corners" />
-                <p className="text-[11px] text-muted-foreground">Retraces live as you drag.</p>
-              </div>
-            </details>
+
           </div>
         </Section>
       </aside>
@@ -283,11 +255,6 @@ export function ForgeWorkspace() {
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
           <div className="space-y-4">
             <div className="forge-card p-4">
-              <h3 className="mb-2 text-xs font-bold">Background removal</h3>
-              <label className="flex items-center justify-between text-xs font-medium">Remove background before tracing<Switch checked={removeBg} onCheckedChange={setRemoveBg} aria-label="Remove background" /></label>
-              <p className="mt-2 text-[11px] text-muted-foreground">Strips the backdrop before the trace runs, so stray background color doesn't become its own layer.</p>
-            </div>
-            <div className="forge-card p-4">
               <div className="mb-2 flex items-center justify-between"><h3 className="text-xs font-bold">Color layers</h3><span className="text-[11px] text-muted-foreground">{marked.size} of {result?.shapes.length ?? 0} marked</span></div>
               <p className="mb-3 text-[11px] text-muted-foreground">Hide a layer to mark every shape in it for removal.</p>
               <div className="flex max-h-40 flex-wrap gap-2 overflow-auto">
@@ -316,6 +283,27 @@ export function ForgeWorkspace() {
           <Button size="sm" variant="outline" className="h-8" onClick={() => { setSupportSent(false); setSupportOpen(true); }}>Contact support</Button>
         </div>
       </section>
+
+      <aside className="forge-tuning space-y-4">
+        <Section step={5} title="Tuning controls" aside={<span className="text-[10px] text-muted-foreground">Live</span>}>
+          <div className="space-y-5">
+            {mode === 'outline' ? <>
+              <SliderRow label="Color detail" value={colorDetail} min={2} max={10} onChange={tune(setColorDetail)} hint="Higher values create more distinct color layers." />
+              <SliderRow label="Noise filter" value={noise} unit="px" min={1} max={20} onChange={tune(setNoise)} hint="Higher values remove smaller regions." />
+            </> : <>
+              <SliderRow label="Colors" value={colors} min={2} max={32} onChange={tune(setColors)} hint="Maximum distinct color layers in the output." />
+              <SliderRow label="Detail / auto-reduce" value={reduce} unit="px" min={1} max={20} onChange={tune(setReduce)} hint="Higher values merge away more small regions." />
+            </>}
+            <SliderRow label="Smoothness" value={smoothness} min={0} max={1.5} step={0.05} onChange={setSmoothness} hint="Higher values smooth curves; lower values preserve corners." />
+            <p className="text-[11px] text-muted-foreground">Changes retrace live while you drag.</p>
+            <div className="border-t pt-4">
+              <h3 className="mb-2 text-xs font-bold">Background removal</h3>
+              <label className="flex items-center justify-between gap-3 text-xs font-medium">Remove background before tracing<Switch checked={removeBg} onCheckedChange={setRemoveBg} aria-label="Remove background" /></label>
+              <p className="mt-2 text-[11px] text-muted-foreground">Helps prevent stray background colors from becoming separate layers.</p>
+            </div>
+          </div>
+        </Section>
+      </aside>
     </main>
 
     <footer className="forge-actionbar">
